@@ -13,7 +13,7 @@ export default class KeyMongo {
             })
         })
         Object.defineProperty(this, "db", {
-            value: this.db = this.clientDb.db(this.options.dbName || 'keymongo').collection(this.options.name) 
+            value: this.db = this.clientDb.db(this.options.dbName || 'keymongo').collection(this.options.collectionName) 
         })
     }
     /**

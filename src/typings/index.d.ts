@@ -5,5 +5,5 @@ export interface keyOptions {
     port?: string
     user?: string,
     password?: string,
-    name: string
+    collectionName: string
 }
