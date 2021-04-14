@@ -1,0 +1,12 @@
+.gitignore
+tes.js
+typedoc.json
+yarn.lock
+src
+node_modules
+docs
+example
+.github
+.eslintrc.yml
+.gitattributes
+tsonfig.json

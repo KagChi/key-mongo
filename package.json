@@ -1,6 +1,6 @@
 {
   "name": "key-mongo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A easy mongodb wrapper, key value usage",
   "main": "dist",
   "repository": "https://github.com/KagChi/key-mongo",
@@ -14,7 +14,8 @@
     "build": "rimraf dist && tsc",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix --no-error-on-unmatched-pattern",
-    "docs": "typedoc"
+    "docs": "typedoc",
+    "publish": "npm publish"
   },
   "devDependencies": {
     "@types/mongodb": "^3.6.12",

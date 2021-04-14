@@ -30,9 +30,9 @@ class KeyMongo {
      * @example key_mongo.get('user_1') 
      */
 
-    public async get(key: string | number) {
+    public get(key: string | number) {
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
-        return await this.db.findOne({ _id: key })
+        return this.db.findOne({ _id: key }).then(x => x.value)
     }
 
     /**
