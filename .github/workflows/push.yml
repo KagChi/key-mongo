@@ -18,9 +18,9 @@ jobs:
           git fetch origin ${{ github.ref }}
           git pull origin ${{ github.ref }}
       - name: Installing dependencies
-        run: yarn install --frozen-lockfile
-      - name: Running linter and compile
-        run: yarn test
+        run: yarn install
+      - name: Building the code
+        run: yarn build
       - name: Force add dist
         run: git add dist -f
       - name: Configuring user
