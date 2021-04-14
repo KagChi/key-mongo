@@ -22,5 +22,5 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Installing dependencies
         run: yarn install
-      - name: Running eslint:fix
-        run: yarn eslint:fix
+      - name: Running lint:fix
+        run: yarn lint:fix
