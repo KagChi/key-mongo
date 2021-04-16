@@ -1,20 +1,22 @@
 import KeyError from "./keyError";
 import { MongoClient, Collection } from "mongodb";
 class KeyMongo {
-    constructor(public options: keyOptions) { }
-    public clientDb!: MongoClient;
-    public db!: Collection<any>
-    public async init() {
-        Object.defineProperty(this, "clientDb", {
-            value: await MongoClient.connect(this.options.dbUrl! || `mongodb://${this.options.user}:${this.options.password}@${this.options.host}${this.options.port}/${this.options.dbName}`, {
-                useUnifiedTopology: true,
-                useNewUrlParser: true
+    constructor(public options: keyOptions) {
+        MongoClient.connect(this.options.dbUrl! || `mongodb://${this.options.user}:${this.options.password}@${this.options.host}${this.options.port}/${this.options.dbName}` || 'mongodb://127.0.0.1:27017', {
+            useUnifiedTopology: true,
+            useNewUrlParser: true
+        }).then(x =>  {
+            Object.defineProperty(this, "clientDb", {
+                value: x
+            })
+            Object.defineProperty(this, "db", {
+                value: x.db(this.options.dbName || 'keymongo').collection(this.options.collectionName) 
             })
         })
-        Object.defineProperty(this, "db", {
-            value: this.db = this.clientDb.db(this.options.dbName || 'keymongo').collection(this.options.collectionName) 
-        })
-    }
+     }
+    public clientDb!: MongoClient;
+    public db!: Collection<any>
+    public state!: string;
     /**
      * 
      * @example key_mongo.set('user_1', { money: 20 })
@@ -24,6 +26,10 @@ class KeyMongo {
         this.db.updateOne({ _id: key}, {
             $set: { _id: key, value: value }
         }, { upsert: true })
+        return {
+            _id: key,
+            value: value
+        }
     }
     /**
      * 
@@ -42,6 +48,9 @@ class KeyMongo {
     public delete(key: string | number) {
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         this.db.deleteOne({ _id: key })
+        return {
+            _id: key
+        }
     }
 
     /**
@@ -62,6 +71,7 @@ class KeyMongo {
      * @example key_mongo.clear()
      */
     public clear() {
+        if(!this.clientDb.isConnected()) return null;
         this.db.drop()
     }
 }

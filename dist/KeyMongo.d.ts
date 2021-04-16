@@ -4,22 +4,27 @@ declare class KeyMongo {
     constructor(options: keyOptions);
     clientDb: MongoClient;
     db: Collection<any>;
-    init(): Promise<void>;
+    state: string;
     /**
      *
      * @example key_mongo.set('user_1', { money: 20 })
      */
-    set(key: string | number, value: unknown): void;
+    set(key: string | number, value: unknown): {
+        _id: string | number;
+        value: unknown;
+    } | null;
     /**
      *
      * @example key_mongo.get('user_1')
      */
-    get(key: string | number): Promise<any>;
+    get(key: string | number): Promise<any> | null;
     /**
      *
      * @example key_mongo.delete('user_1')
      */
-    delete(key: string | number): void;
+    delete(key: string | number): {
+        _id: string | number;
+    } | null;
     /**
      *
      * @example key_mongo.has('user_1')
@@ -29,7 +34,7 @@ declare class KeyMongo {
     /**
      * @example key_mongo.clear()
      */
-    clear(): void;
+    clear(): null | undefined;
 }
 export { KeyMongo };
 export interface keyOptions {
