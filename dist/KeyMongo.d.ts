@@ -4,7 +4,6 @@ declare class KeyMongo {
     constructor(options: keyOptions);
     clientDb: MongoClient;
     db: Collection<any>;
-    state: string;
     /**
      *
      * @example key_mongo.set('user_1', { money: 20 })
