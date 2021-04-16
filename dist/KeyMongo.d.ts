@@ -12,19 +12,19 @@ declare class KeyMongo {
     set(key: string | number, value: unknown): {
         _id: string | number;
         value: unknown;
-    } | null;
+    };
     /**
      *
      * @example key_mongo.get('user_1')
      */
-    get(key: string | number): Promise<any> | null;
+    get(key: string | number): Promise<any>;
     /**
      *
      * @example key_mongo.delete('user_1')
      */
     delete(key: string | number): {
         _id: string | number;
-    } | null;
+    };
     /**
      *
      * @example key_mongo.has('user_1')
