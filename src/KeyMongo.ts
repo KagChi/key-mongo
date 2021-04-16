@@ -37,7 +37,7 @@ class KeyMongo {
 
     public get(key: string | number) {
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
-        return this.db.findOne({ _id: key }).then(x => x.value)
+        return this.db.findOne({ _id: key }).then(x => x ? x.value : null)
     }
 
     /**

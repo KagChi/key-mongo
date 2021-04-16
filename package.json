@@ -1,6 +1,6 @@
 {
   "name": "key-mongo",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "A easy to use mongodb wrapper, key value usage",
   "main": "dist",
   "repository": "https://github.com/KagChi/key-mongo",
