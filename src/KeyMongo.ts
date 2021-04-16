@@ -15,8 +15,7 @@ class KeyMongo {
         })
      }
     public clientDb!: MongoClient;
-    public db!: Collection<any>
-    public state!: string;
+    public db!: Collection<any>;
     /**
      * 
      * @example key_mongo.set('user_1', { money: 20 })
