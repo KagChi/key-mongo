@@ -10,6 +10,7 @@
   "dependencies": {
     "mongodb": "^3.6.6"
   },
+  "homepage": "https://kagchi.github.io/key-mongo/index.html",
   "keywords": [
     "mongodb",
     "keyv",
