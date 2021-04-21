@@ -1,8 +1,11 @@
 import KeyError from "./keyError";
 import { MongoClient, Collection } from "mongodb";
 class KeyMongo {
-    constructor(public options: keyOptions) {
-        MongoClient.connect(this.options.dbUrl! || `mongodb://${this.options.user}:${this.options.password}@${this.options.host}${this.options.port}/${this.options.dbName}` || 'mongodb://127.0.0.1:27017', {
+    constructor(options: keyOptions) {
+        Object.defineProperty(this, "options", {
+            value: options
+        })
+        MongoClient.connect(options.dbUrl! || `mongodb://${options.user}:${options.password}@${options.host}${options.port}/${options.dbName}` || 'mongodb://127.0.0.1:27017', {
             useUnifiedTopology: true,
             useNewUrlParser: true
         }).then(x =>  {
@@ -10,17 +13,25 @@ class KeyMongo {
                 value: x
             })
             Object.defineProperty(this, "db", {
-                value: x.db(this.options.dbName || 'keymongo').collection(this.options.collectionName) 
+                value: x.db(options.dbName || 'keymongo').collection(options.collectionName) 
             })
         })
+        setInterval(() => {
+            Object.defineProperty(this, 'state', {
+                value: this.db && this.clientDb ? 'CONNECTED' : 'NOT_CONNECTED' 
+            })
+        }, 2000)
      }
-    public clientDb!: MongoClient;
-    public db!: Collection<any>;
+    public readonly version: string = require('../package.json').version
+    public readonly clientDb!: MongoClient;
+    public readonly db!: Collection<any>;
+    public readonly state!: string;
     /**
      * 
      * @example key_mongo.set('user_1', { money: 20 })
      */
     public set(key: string | number, value: unknown) {
+        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         this.db.updateOne({ _id: key}, {
             $set: { _id: key, value: value }
@@ -36,6 +47,7 @@ class KeyMongo {
      */
 
     public get(key: string | number) {
+        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         return this.db.findOne({ _id: key }).then(x => x ? x.value : null)
     }
@@ -45,6 +57,7 @@ class KeyMongo {
      * @example key_mongo.delete('user_1')
      */
     public delete(key: string | number) {
+        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         this.db.deleteOne({ _id: key })
         return {
@@ -55,9 +68,9 @@ class KeyMongo {
     /**
      * 
      * @example key_mongo.has('user_1')
-     * @returns Boolean
      */
     public async has(key: string | number) {
+        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         const findDB = await this.db.findOne({ _id: key })
         if(findDB) {
@@ -70,8 +83,15 @@ class KeyMongo {
      * @example key_mongo.clear()
      */
     public clear() {
-        if(!this.clientDb.isConnected()) return null;
-        this.db.drop()
+        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        return this.db.drop()
+    }
+    /**
+     * 
+     */
+    public async list() {
+        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        return await this.db.find({}).toArray()
     }
 }
 export { KeyMongo }
