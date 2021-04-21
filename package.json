@@ -26,9 +26,6 @@
     "lint:fix": "eslint src --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc"
   },
-  "engines": {
-    "node": "14.x"
-  },
   "devDependencies": {
     "@types/mongodb": "^3.6.12",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
