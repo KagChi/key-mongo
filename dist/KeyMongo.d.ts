@@ -29,16 +29,14 @@ declare class KeyMongo {
     /**
      *
      * @example key_mongo.has('user_1')
-     * @returns Boolean
      */
     has(key: string | number): Promise<boolean | KeyError>;
     /**
      * @example key_mongo.clear()
      */
-    clear(): KeyError | undefined;
+    clear(): KeyError | Promise<any>;
     /**
      *
-     * @returns any[]
      */
     list(): Promise<any[] | KeyError>;
 }
