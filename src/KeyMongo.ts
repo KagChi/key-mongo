@@ -16,16 +16,10 @@ class KeyMongo {
                 value: x.db(options.dbName || 'keymongo').collection(options.collectionName) 
             })
         })
-        setInterval(() => {
-            Object.defineProperty(this, 'state', {
-                value: this.db && this.clientDb ? 'CONNECTED' : 'NOT_CONNECTED' 
-            })
-        }, 2000)
      }
     public readonly version: string = require('../package.json').version
     public readonly clientDb!: MongoClient;
     public readonly db!: Collection<any>;
-    public readonly state!: string;
     /**
      * 
      * @example key_mongo.set('user_1', { money: 20 })
