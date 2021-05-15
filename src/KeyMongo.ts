@@ -20,6 +20,8 @@ class KeyMongo {
     public readonly version: string = require('../package.json').version
     public readonly clientDb!: MongoClient;
     public readonly db!: Collection<any>;
+    public state: string = this.db && this.clientDb ? "CONNECTED" : "NOT_CONNECTED";
+
     /**
      * 
      * @example key_mongo.set('user_1', { money: 20 })
