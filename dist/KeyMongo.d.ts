@@ -5,7 +5,6 @@ declare class KeyMongo {
     readonly version: string;
     readonly clientDb: MongoClient;
     readonly db: Collection<any>;
-    state: string;
     /**
      *
      * @example key_mongo.set('user_1', { money: 20 })
