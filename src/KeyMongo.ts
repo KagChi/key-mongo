@@ -20,14 +20,13 @@ class KeyMongo {
     public readonly version: string = require('../package.json').version
     public readonly clientDb!: MongoClient;
     public readonly db!: Collection<any>;
-    public state: string = this.db && this.clientDb ? "CONNECTED" : "NOT_CONNECTED";
-
+    
     /**
      * 
      * @example key_mongo.set('user_1', { money: 20 })
      */
     public set(key: string | number, value: unknown) {
-        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         this.db.updateOne({ _id: key}, {
             $set: { _id: key, value: value }
@@ -43,7 +42,7 @@ class KeyMongo {
      */
 
     public get(key: string | number) {
-        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         return this.db.findOne({ _id: key }).then(x => x ? x.value : null)
     }
@@ -53,7 +52,7 @@ class KeyMongo {
      * @example key_mongo.delete('user_1')
      */
     public delete(key: string | number) {
-        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         this.db.deleteOne({ _id: key })
         return {
@@ -66,7 +65,7 @@ class KeyMongo {
      * @example key_mongo.has('user_1')
      */
     public async has(key: string | number) {
-        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
         const findDB = await this.db.findOne({ _id: key })
         if(findDB) {
@@ -79,14 +78,14 @@ class KeyMongo {
      * @example key_mongo.clear()
      */
     public clear() {
-        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         return this.db.drop()
     }
     /**
      * 
      */
     public async list() {
-        if(this.state !== 'CONNECTED') return new KeyError('connectionError', 'not yet connected to mongodb server');
+        if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         return await this.db.find({}).toArray()
     }
 }
