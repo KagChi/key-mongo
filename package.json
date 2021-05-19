@@ -8,7 +8,7 @@
   "license": "GPL-3.0",
   "private": false,
   "dependencies": {
-    "mongodb": "^3.6.6"
+    "mongodb": "^3.6.7"
   },
   "homepage": "https://kagchi.github.io/key-mongo/index.html",
   "keywords": [
