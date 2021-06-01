@@ -1,43 +1,43 @@
 import KeyError from "./keyError";
-import { MongoClient, Collection } from "mongodb";
+import { MongoClient, Db } from "mongodb";
 declare class KeyMongo {
     constructor(options: keyOptions);
     readonly version: string;
     readonly clientDb: MongoClient;
-    readonly db: Collection<any>;
+    readonly db: Db;
     /**
      *
-     * @example key_mongo.set('user_1', { money: 20 })
+     * @example key_mongo.set('collection', 'user_1', { money: 20 })
      */
-    set(key: string | number, value: unknown): KeyError | {
+    set(collectionName: string, key: string | number, value: unknown): KeyError | {
         _id: string | number;
         value: unknown;
     };
     /**
      *
-     * @example key_mongo.get('user_1')
+     * @example key_mongo.get('collection', 'user_1')
      */
-    get(key: string | number): KeyError | Promise<any>;
+    get(collectionName: string, key: string | number): KeyError | Promise<any>;
     /**
      *
-     * @example key_mongo.delete('user_1')
+     * @example key_mongo.delete('collection', 'user_1')
      */
-    delete(key: string | number): KeyError | {
+    delete(collectionName: string, key: string | number): KeyError | {
         _id: string | number;
     };
     /**
      *
-     * @example key_mongo.has('user_1')
+     * @example key_mongo.has('collection', 'user_1')
      */
-    has(key: string | number): Promise<boolean | KeyError>;
+    has(collectionName: string, key: string | number): Promise<boolean | KeyError>;
     /**
-     * @example key_mongo.clear()
+     * @example key_mongo.clear('collection')
      */
-    clear(): KeyError | Promise<any>;
+    clear(collectionName: string): KeyError | Promise<any>;
     /**
-     *
+     * @example key_mongo.list('collection')
      */
-    list(): Promise<any[] | KeyError>;
+    list(collectionName: string): Promise<any[] | KeyError>;
 }
 export { KeyMongo };
 export interface keyOptions {
@@ -47,5 +47,4 @@ export interface keyOptions {
     port?: string;
     user?: string;
     password?: string;
-    collectionName: string;
 }

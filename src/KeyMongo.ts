@@ -1,5 +1,5 @@
 import KeyError from "./keyError";
-import { MongoClient, Collection } from "mongodb";
+import { MongoClient, Db } from "mongodb";
 class KeyMongo {
     constructor(options: keyOptions) {
         Object.defineProperty(this, "options", {
@@ -13,22 +13,22 @@ class KeyMongo {
                 value: x
             })
             Object.defineProperty(this, "db", {
-                value: x.db(options.dbName || 'keymongo').collection(options.collectionName) 
+                value: x.db(options.dbName || 'keymongo')
             })
         })
      }
     public readonly version: string = require('../package.json').version
     public readonly clientDb!: MongoClient;
-    public readonly db!: Collection<any>;
+    public readonly db!: Db;
     
     /**
      * 
-     * @example key_mongo.set('user_1', { money: 20 })
+     * @example key_mongo.set('collection', 'user_1', { money: 20 })
      */
-    public set(key: string | number, value: unknown) {
+    public set(collectionName: string, key: string | number, value: unknown) {
         if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
-        this.db.updateOne({ _id: key}, {
+        this.db.collection(collectionName).updateOne({ _id: key}, {
             $set: { _id: key, value: value }
         }, { upsert: true })
         return {
@@ -38,23 +38,23 @@ class KeyMongo {
     }
     /**
      * 
-     * @example key_mongo.get('user_1') 
+     * @example key_mongo.get('collection', 'user_1') 
      */
 
-    public get(key: string | number) {
+    public get(collectionName: string, key: string | number) {
         if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
-        return this.db.findOne({ _id: key }).then(x => x ? x.value : null)
+        return this.db.collection(collectionName).findOne({ _id: key }).then(x => x ? x.value : null)
     }
 
     /**
      * 
-     * @example key_mongo.delete('user_1')
+     * @example key_mongo.delete('collection', 'user_1')
      */
-    public delete(key: string | number) {
+    public delete(collectionName: string, key: string | number) {
         if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
-        this.db.deleteOne({ _id: key })
+        this.db.collection(collectionName).deleteOne({ _id: key })
         return {
             _id: key
         }
@@ -62,12 +62,12 @@ class KeyMongo {
 
     /**
      * 
-     * @example key_mongo.has('user_1')
+     * @example key_mongo.has('collection', 'user_1')
      */
-    public async has(key: string | number) {
+    public async has(collectionName: string, key: string | number) {
         if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
         if(!key || !['String', 'Number'].includes(key.constructor.name)) throw new KeyError('TypeError', 'The key must be string or number.');
-        const findDB = await this.db.findOne({ _id: key })
+        const findDB = await this.db.collection(collectionName).findOne({ _id: key })
         if(findDB) {
             return true
         } else {
@@ -75,18 +75,18 @@ class KeyMongo {
         }
     }
     /**
-     * @example key_mongo.clear()
+     * @example key_mongo.clear('collection')
      */
-    public clear() {
+    public clear(collectionName: string) {
         if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
-        return this.db.drop()
+        return this.db.collection(collectionName).drop()
     }
     /**
-     * 
+     * @example key_mongo.list('collection')
      */
-    public async list() {
+    public async list(collectionName: string) {
         if(!this.clientDb) return new KeyError('connectionError', 'not yet connected to mongodb server');
-        return await this.db.find({}).toArray()
+        return await this.db.collection(collectionName).find({}).toArray()
     }
 }
 export { KeyMongo }
@@ -98,5 +98,4 @@ export interface keyOptions {
     port?: string
     user?: string,
     password?: string,
-    collectionName: string
 }
