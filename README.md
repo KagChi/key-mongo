@@ -1,5 +1,6 @@
 ### key-mongo 
 Easy to use mongodb wrapper, keyvalue usage.
+
 ### Installing
 ```
 Yarn: yarn add key-mongo
