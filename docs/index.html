@@ -61,7 +61,7 @@
 				<a href="#key-mongo" id="key-mongo" style="color: inherit; text-decoration: none;">
 					<h3>key-mongo</h3>
 				</a>
-				<p>Easy to use mongodb wrapper just like Map()</p>
+				<p>Easy to use mongodb wrapper, keyvalue usage.</p>
 				<a href="#installing" id="installing" style="color: inherit; text-decoration: none;">
 					<h3>Installing</h3>
 				</a>
@@ -75,11 +75,10 @@
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">KeyClient</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">KeyMongo</span><span style="color: #000000">({</span>
 <span style="color: #000000">    </span><span style="color: #001080">dbName:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;test&#039;</span><span style="color: #000000">,</span>
 <span style="color: #000000">    </span><span style="color: #001080">dbUrl:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;yOuR nIcE mOnGoDbUrL&#039;</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #001080">collectionName:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;currency&#039;</span>
 <span style="color: #000000">})</span>
 <span style="color: #008000">/** when already connected to database you can remove timeout */</span>
 <span style="color: #795E26">setTimeout</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #001080">KeyClient</span><span style="color: #000000">.</span><span style="color: #795E26">set</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;user_1&#039;</span><span style="color: #000000">, { </span><span style="color: #001080">money:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000">, </span><span style="color: #001080">premium:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> } )</span>
+<span style="color: #000000">    </span><span style="color: #001080">KeyClient</span><span style="color: #000000">.</span><span style="color: #795E26">set</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;collection&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;user_1&#039;</span><span style="color: #000000">, { </span><span style="color: #001080">money:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000">, </span><span style="color: #001080">premium:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> } )</span>
 <span style="color: #000000">}, </span><span style="color: #098658">3000</span><span style="color: #000000">)</span>
 
 </code></pre>
@@ -96,7 +95,7 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="classes/keymongo.html" class="tsd-kind-icon">Key<wbr>Mongo</a>
+						<a href="classes/KeyMongo.html" class="tsd-kind-icon">Key<wbr>Mongo</a>
 					</li>
 				</ul>
 			</nav>
