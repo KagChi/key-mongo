@@ -109,6 +109,7 @@ export class KeyMongo {
    * @param {key|number} key 
    * @param {string|number} insert 
    * @param {unknown} value 
+   * @example key_mongo.deleteData('database', 'user_1', 'money', 69)
    * @returns {Promise<any>} Promise<any>
    */
   public async updateData(collectionName: string, key: string | number, insert: string | number, value: unknown): Promise<any> {
@@ -126,6 +127,7 @@ export class KeyMongo {
    * @param {string} collectionName
    * @param {key|number} key
    * @param {string|number} insert
+   * @example key_mongo.deleteData('database', 'user_1', 'money')
    * @returns {Promise<any>} Promise<any>
    */
   public async deleteData(collectionName: string, key: string | number, insert: string | number): Promise<any> {
