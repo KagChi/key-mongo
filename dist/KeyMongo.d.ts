@@ -1,45 +1,73 @@
-import KeyError from "./keyError";
-import { MongoClient, Db } from "mongodb";
-declare class KeyMongo {
+import { Db, MongoClient } from 'mongodb';
+export declare class KeyMongo {
     constructor(options: keyOptions);
-    readonly version: string;
     readonly clientDb: MongoClient;
     readonly db: Db;
     /**
      *
-     * @example key_mongo.set('collection', 'user_1', { money: 20 })
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @param {unknown} value
+     * @returns {any} any
+     * @example key_mongo.set('database', 'user_1', { money: 20 })
      */
-    set(collectionName: string, key: string | number, value: unknown): KeyError | {
-        _id: string | number;
-        value: unknown;
-    };
+    set(collectionName: string, key: string | number, value: unknown): any;
     /**
      *
-     * @example key_mongo.get('collection', 'user_1')
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @example key_mongo.get('database', 'user_1')
+     * @returns {Promise<any>} Promise<any>
      */
-    get(collectionName: string, key: string | number): KeyError | Promise<any>;
+    get(collectionName: string, key: string | number): Promise<any>;
     /**
      *
-     * @example key_mongo.delete('collection', 'user_1')
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @example key_mongo.delete('database', 'user_1')
+     * @returns {any|number|string} any|number|string
      */
-    delete(collectionName: string, key: string | number): KeyError | {
-        _id: string | number;
-    };
+    delete(collectionName: string, key: string | number): any | number | string;
     /**
      *
-     * @example key_mongo.has('collection', 'user_1')
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @example key_mongo.has('database', 'user_1')
+     * @returns {Promise<any|boolean>} Promise<any|boolean>
      */
-    has(collectionName: string, key: string | number): Promise<boolean | KeyError>;
+    has(collectionName: string, key: string | number): Promise<any | boolean>;
     /**
-     * @example key_mongo.clear('collection')
+     *
+     * @param {string} collectionName
+     * @example key_mongo.drop('database')
+     * @returns {Promise<any>} Promise<any>
      */
-    clear(collectionName: string): KeyError | Promise<any>;
+    drop(collectionName: string): Promise<any>;
     /**
-     * @example key_mongo.list('collection')
+     *
+     * @param {string} collectionName
+     * @example key_mongo.list('database')
+     * @returns {Promise<any>} Promise<any>
      */
-    list(collectionName: string): Promise<any[] | KeyError>;
+    list(collectionName: string): Promise<any>;
+    /**
+     *
+     * @param {string} collectionName
+     * @param {key|number} key
+     * @param {string|number} insert
+     * @param {unknown} value
+     * @returns {Promise<any>} Promise<any>
+     */
+    updateData(collectionName: string, key: string | number, insert: string | number, value: unknown): Promise<any>;
+    /**
+     *
+     * @param {string} collectionName
+     * @param {key|number} key
+     * @param {string|number} insert
+     * @returns {Promise<any>} Promise<any>
+     */
+    deleteData(collectionName: string, key: string | number, insert: string | number): Promise<any>;
 }
-export { KeyMongo };
 export interface keyOptions {
     dbUrl?: string;
     dbName?: string;

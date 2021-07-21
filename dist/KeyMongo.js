@@ -13,105 +13,168 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KeyMongo = void 0;
-const keyError_1 = __importDefault(require("./keyError"));
 const mongodb_1 = require("mongodb");
+const keyError_1 = __importDefault(require("./keyError"));
 class KeyMongo {
     constructor(options) {
-        this.version = require('../package.json').version;
         Object.defineProperty(this, "options", {
-            value: options
+            value: options,
         });
-        mongodb_1.MongoClient.connect(options.dbUrl || `mongodb://${options.user}:${options.password}@${options.host}${options.port}/${options.dbName}` || 'mongodb://127.0.0.1:27017', {
-            useUnifiedTopology: true,
-            useNewUrlParser: true
-        }).then(x => {
+        mongodb_1.MongoClient.connect(options.dbUrl || `mongodb://${options.user}:${options.password}@${options.host}${options.port}/${options.dbName}` || "mongodb://127.0.0.1:27017").then((x) => {
             Object.defineProperty(this, "clientDb", {
-                value: x
+                value: x,
             });
             Object.defineProperty(this, "db", {
-                value: x.db(options.dbName || 'keymongo')
+                value: x.db(options.dbName || "keymongo"),
             });
         });
     }
     /**
      *
-     * @example key_mongo.set('collection', 'user_1', { money: 20 })
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @param {unknown} value
+     * @returns {any} any
+     * @example key_mongo.set('database', 'user_1', { money: 20 })
      */
     set(collectionName, key, value) {
         if (!this.clientDb)
-            return new keyError_1.default('connectionError', 'not yet connected to mongodb server');
-        if (!key || !['String', 'Number'].includes(key.constructor.name))
-            throw new keyError_1.default('TypeError', 'The key must be string or number.');
-        this.db.collection(collectionName).updateOne({ _id: key }, {
-            $set: { _id: key, value: value }
-        }, { upsert: true });
+            return new keyError_1.default("connectionError", "not yet connected to mongodb server");
+        if (!key || !["String", "Number"].includes(key.constructor.name))
+            throw new keyError_1.default("TypeError", "The key must be string or number.");
+        this.db.collection(collectionName).updateOne({
+            _id: key
+        }, {
+            $set: {
+                _id: key, value: value
+            }
+        }, {
+            upsert: true
+        });
         return {
             _id: key,
-            value: value
+            value: value,
         };
     }
     /**
      *
-     * @example key_mongo.get('collection', 'user_1')
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @example key_mongo.get('database', 'user_1')
+     * @returns {Promise<any>} Promise<any>
      */
     get(collectionName, key) {
-        if (!this.clientDb)
-            return new keyError_1.default('connectionError', 'not yet connected to mongodb server');
-        if (!key || !['String', 'Number'].includes(key.constructor.name))
-            throw new keyError_1.default('TypeError', 'The key must be string or number.');
-        return this.db.collection(collectionName).findOne({ _id: key }).then(x => x ? x.value : null);
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.clientDb)
+                return new keyError_1.default("connectionError", "not yet connected to mongodb server");
+            if (!key || !["String", "Number"].includes(key.constructor.name))
+                throw new keyError_1.default("TypeError", "The key must be string or number.");
+            return this.db.collection(collectionName).findOne({ _id: key }).then((x) => (x ? x.value : null));
+        });
     }
     /**
      *
-     * @example key_mongo.delete('collection', 'user_1')
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @example key_mongo.delete('database', 'user_1')
+     * @returns {any|number|string} any|number|string
      */
     delete(collectionName, key) {
         if (!this.clientDb)
-            return new keyError_1.default('connectionError', 'not yet connected to mongodb server');
-        if (!key || !['String', 'Number'].includes(key.constructor.name))
-            throw new keyError_1.default('TypeError', 'The key must be string or number.');
+            return new keyError_1.default("connectionError", "not yet connected to mongodb server");
+        if (!key || !["String", "Number"].includes(key.constructor.name))
+            throw new keyError_1.default("TypeError", "The key must be string or number.");
         this.db.collection(collectionName).deleteOne({ _id: key });
-        return {
-            _id: key
-        };
+        return { _id: key };
     }
     /**
      *
-     * @example key_mongo.has('collection', 'user_1')
+     * @param {string} collectionName
+     * @param {string|number} key
+     * @example key_mongo.has('database', 'user_1')
+     * @returns {Promise<any|boolean>} Promise<any|boolean>
      */
     has(collectionName, key) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.clientDb)
-                return new keyError_1.default('connectionError', 'not yet connected to mongodb server');
-            if (!key || !['String', 'Number'].includes(key.constructor.name))
-                throw new keyError_1.default('TypeError', 'The key must be string or number.');
+                return new keyError_1.default("connectionError", "not yet connected to mongodb server");
+            if (!key || !["String", "Number"].includes(key.constructor.name))
+                throw new keyError_1.default("TypeError", "The key must be string or number.");
             const findDB = yield this.db.collection(collectionName).findOne({ _id: key });
-            if (findDB) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return findDB ? true : false;
         });
     }
     /**
-     * @example key_mongo.clear('collection')
+     *
+     * @param {string} collectionName
+     * @example key_mongo.drop('database')
+     * @returns {Promise<any>} Promise<any>
      */
-    clear(collectionName) {
-        if (!this.clientDb)
-            return new keyError_1.default('connectionError', 'not yet connected to mongodb server');
-        return this.db.collection(collectionName).drop();
+    drop(collectionName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.clientDb)
+                return new keyError_1.default("connectionError", "not yet connected to mongodb server");
+            return this.db.collection(collectionName).drop();
+        });
     }
     /**
-     * @example key_mongo.list('collection')
+     *
+     * @param {string} collectionName
+     * @example key_mongo.list('database')
+     * @returns {Promise<any>} Promise<any>
      */
     list(collectionName) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.clientDb)
-                return new keyError_1.default('connectionError', 'not yet connected to mongodb server');
+                return new keyError_1.default("connectionError", "not yet connected to mongodb server");
             return yield this.db.collection(collectionName).find({}).toArray();
+        });
+    }
+    /**
+     *
+     * @param {string} collectionName
+     * @param {key|number} key
+     * @param {string|number} insert
+     * @param {unknown} value
+     * @returns {Promise<any>} Promise<any>
+     */
+    updateData(collectionName, key, insert, value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.clientDb)
+                return new keyError_1.default("connectionError", "not yet connected to mongodb server");
+            if (!key || !["String", "Number"].includes(key.constructor.name))
+                throw new keyError_1.default("TypeError", "The key must be string or number.");
+            if (!(yield this.has(collectionName, key)))
+                return this.set(collectionName, key, {
+                    [insert]: value
+                });
+            const data = yield this.get(collectionName, key);
+            data[insert] = value;
+            return this.set(collectionName, key, data);
+        });
+    }
+    /**
+     *
+     * @param {string} collectionName
+     * @param {key|number} key
+     * @param {string|number} insert
+     * @returns {Promise<any>} Promise<any>
+     */
+    deleteData(collectionName, key, insert) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.clientDb)
+                return new keyError_1.default("connectionError", "not yet connected to mongodb server");
+            if (!key || !["String", "Number"].includes(key.constructor.name))
+                throw new keyError_1.default("TypeError", "The key must be string or number.");
+            if (!(yield this.has(collectionName, key)))
+                throw new keyError_1.default("DataError", "Data not found.");
+            const data = yield this.get(collectionName, key);
+            delete data[insert];
+            if (!Object.keys(data)[0])
+                return this.delete(collectionName, key);
+            return this.set(collectionName, key, data);
         });
     }
 }
 exports.KeyMongo = KeyMongo;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiS2V5TW9uZ28uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvS2V5TW9uZ28udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7O0FBQUEsMERBQWtDO0FBQ2xDLHFDQUEwQztBQUMxQyxNQUFNLFFBQVE7SUFDVixZQUFZLE9BQW1CO1FBZ0JmLFlBQU8sR0FBVyxPQUFPLENBQUMsaUJBQWlCLENBQUMsQ0FBQyxPQUFPLENBQUE7UUFmaEUsTUFBTSxDQUFDLGNBQWMsQ0FBQyxJQUFJLEVBQUUsU0FBUyxFQUFFO1lBQ25DLEtBQUssRUFBRSxPQUFPO1NBQ2pCLENBQUMsQ0FBQTtRQUNGLHFCQUFXLENBQUMsT0FBTyxDQUFDLE9BQU8sQ0FBQyxLQUFNLElBQUksYUFBYSxPQUFPLENBQUMsSUFBSSxJQUFJLE9BQU8sQ0FBQyxRQUFRLElBQUksT0FBTyxDQUFDLElBQUksR0FBRyxPQUFPLENBQUMsSUFBSSxJQUFJLE9BQU8sQ0FBQyxNQUFNLEVBQUUsSUFBSSwyQkFBMkIsRUFBRTtZQUNuSyxrQkFBa0IsRUFBRSxJQUFJO1lBQ3hCLGVBQWUsRUFBRSxJQUFJO1NBQ3hCLENBQUMsQ0FBQyxJQUFJLENBQUMsQ0FBQyxDQUFDLEVBQUU7WUFDUixNQUFNLENBQUMsY0FBYyxDQUFDLElBQUksRUFBRSxVQUFVLEVBQUU7Z0JBQ3BDLEtBQUssRUFBRSxDQUFDO2FBQ1gsQ0FBQyxDQUFBO1lBQ0YsTUFBTSxDQUFDLGNBQWMsQ0FBQyxJQUFJLEVBQUUsSUFBSSxFQUFFO2dCQUM5QixLQUFLLEVBQUUsQ0FBQyxDQUFDLEVBQUUsQ0FBQyxPQUFPLENBQUMsTUFBTSxJQUFJLFVBQVUsQ0FBQzthQUM1QyxDQUFDLENBQUE7UUFDTixDQUFDLENBQUMsQ0FBQTtJQUNMLENBQUM7SUFLRjs7O09BR0c7SUFDSSxHQUFHLENBQUMsY0FBc0IsRUFBRSxHQUFvQixFQUFFLEtBQWM7UUFDbkUsSUFBRyxDQUFDLElBQUksQ0FBQyxRQUFRO1lBQUUsT0FB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
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiS2V5TW9uZ28uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvS2V5TW9uZ28udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7O0FBQUEscUNBQTBDO0FBRTFDLDBEQUFrQztBQUVsQyxNQUFhLFFBQVE7SUFDbkIsWUFBbUIsT0FBbUI7UUFDcEMsTUFBTSxDQUFDLGNBQWMsQ0FBQyxJQUFJLEVBQUUsU0FBUyxFQUFFO1lBQ3JDLEtBQUssRUFBRSxPQUFPO1NBQ2YsQ0FBQyxDQUFDO1FBQ0gscUJBQVcsQ0FBQyxPQUFPLENBQUMsT0FBTyxDQUFDLEtBQU0sSUFBSSxhQUFhLE9BQU8sQ0FBQyxJQUFJLElBQUksT0FBTyxDQUFDLFFBQVEsSUFBSSxPQUFPLENBQUMsSUFBSSxHQUFHLE9BQU8sQ0FBQyxJQUFJLElBQUksT0FBTyxDQUFDLE1BQU0sRUFBRSxJQUFJLDJCQUEyQixDQUFDLENBQUMsSUFBSSxDQUFDLENBQUMsQ0FBQyxFQUFFLEVBQUU7WUFDaEwsTUFBTSxDQUFDLGNBQWMsQ0FBQyxJQUFJLEVBQUUsVUFBVSxFQUFFO2dCQUN0QyxLQUFLLEVBQUUsQ0FBQzthQUNULENBQUMsQ0FBQztZQUNILE1BQU0sQ0FBQyxjQUFjLENBQUMsSUFBSSxFQUFFLElBQUksRUFBRTtnQkFDaEMsS0FBSyxFQUFFLENBQUMsQ0FBQyxFQUFFLENBQUMsT0FBTyxDQUFDLE1BQU0sSUFBSSxVQUFVLENBQUM7YUFDMUMsQ0FBQyxDQUFDO1FBQ0wsQ0FBQyxDQUFDLENBQUM7SUFDTCxDQUFDO0lBSUQ7Ozs7Ozs7T0FPRztJQUNJLEdBQUcsQ0FBQyxjQUFzQixFQUFFLEdBQW9CLEVBQUUsS0FBYztRQUNyRSxJQUFJLENBQUMsSUFBSSxDQUFDLFFBQVE7WUFBRSxPQUFPLElBQUksa0JBQVEsQ0FBQyxpQkFBaUIsRUFBRSxxQ0FBcUMsQ0FBQyxDQUFDO1FBQ2xHLElBQUksQ0FBQyxHQUFHLElBQUksQ0FBQyxDQUFDLFFBQVEsRUFBRSxRQUFR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
