@@ -1,2 +1,1 @@
-import { KeyMongo } from './KeyMongo';
-export { KeyMongo }
+export { KeyMongo } from './KeyMongo';
