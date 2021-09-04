@@ -136,7 +136,7 @@ class KeyMongo {
      * @param {key|number} key
      * @param {string|number} insert
      * @param {unknown} value
-     * @example key_mongo.deleteData('database', 'user_1', 'money', 69)
+     * @example key_mongo.updateData('database', 'user_1', 'money', 69)
      * @returns {Promise<any>} Promise<any>
      */
     updateData(collectionName, key, insert, value) {
